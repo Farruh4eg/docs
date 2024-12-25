@@ -1,3 +1,4 @@
+import { read } from '$app/server';
 import type { RequestHandler } from '@sveltejs/kit';
 import fs from 'node:fs/promises';
 
@@ -5,10 +6,9 @@ const prefix = './src/routes/v1/docs/files';
 
 export const GET: RequestHandler = async ({ url }) => {
 	let query = url.searchParams.get('q') || '';
-	let files = await fs.readdir('./');
 
-	console.log(files);
 	console.log(process.cwd());
+	console.log('HELLO WORLD');
 
 	try {
 		const fileContent = await fs.readFile(`${prefix}/${query}.txt`, { encoding: 'utf-8' });
