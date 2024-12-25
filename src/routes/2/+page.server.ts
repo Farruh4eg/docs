@@ -1,5 +1,29 @@
 export const load = async() => {
   let data = `\n
+  AppShell.cs
+namespace todolist
+{
+    public partial class App : Application
+    {
+        public App()
+        {
+            InitializeComponent();
+            using (var db = new NotesContext())
+            {
+                db.Database.EnsureCreated();
+            }
+        }
+
+        protected override Window CreateWindow(IActivationState? activationState)
+        {
+            return new Window(new AppShell());
+        }
+    }
+}
+
+
+
+
   MAUI CODE
   ==========================================================
 
