@@ -1,374 +1,182 @@
 export const load = async() => {
-  let data = `\n\n\nMAINPAGE.XAML
+  let data = `\n\n\n<--Converter(5var)-->
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="DoctorApp.MainPage">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Konverter"
+             x:Class="Konverter.MainPage">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25">
-            <Image
-                Source="dotnet_bot.png"
-                HeightRequest="185"
-                Aspect="AspectFit"
-                SemanticProperties.Description="dot net bot in a hovercraft number nine" />
-
-            <Label
-                Text="Hello, World!"
-                Style="{StaticResource Headline}"
-                SemanticProperties.HeadingLevel="Level1" />
-
-            <Label
-                Text="Welcome to &#10;.NET Multi-platform App UI"
-                Style="{StaticResource SubHeadline}"
-                SemanticProperties.HeadingLevel="Level2"
-                SemanticProperties.Description="Welcome to dot net Multi platform App U I" />
-
-            <Button
-                x:Name="CounterBtn"
-                Text="Click me" 
-                SemanticProperties.Hint="Counts the number of times you click"
-                Clicked="OnCounterClicked"
-                HorizontalOptions="Fill" />
-        </VerticalStackLayout>
-    </ScrollView>
-
-</ContentPage>
-
-----------------------------------------------------------------------------
-
-DoctorsPage.xaml
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="DoctorApp.DoctorsPage"
-             Title="Выберите врача">
     <StackLayout Padding="20">
+        <Label Text="Введите сумму для конвертации"
+               HorizontalOptions="Center" />
 
-        <Label Text="Список врачей"
-               FontSize="20"
+      
+        <Entry x:Name="AmountEntry"
+               Keyboard="Numeric"
+               Placeholder="Введите сумму"
+               HorizontalOptions="FillAndExpand" />
+
+    
+        <Picker x:Name="FromCurrencyPicker" Title="Выберите исходную валюту" />
+        <Picker x:Name="ToCurrencyPicker" Title="Выберите целевую валюту" />
+
+       
+        <Button Text="Конвертировать"
+                Clicked="OnConvertButtonClicked" />
+
+      
+        <Label x:Name="ResultLabel"
                HorizontalOptions="Center"
-               Margin="0,10,0,20"/>
-
-        <ListView x:Name="DoctorsListView"
-                  ItemSelected="OnDoctorSelected"
-                  BackgroundColor="#F0F0F0"
-                  SeparatorColor="Gray">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <StackLayout Padding="10" Orientation="Horizontal">
-                            <Label Text="{Binding Name}" FontSize="16" VerticalOptions="Center"/>
-                            <Label Text="{Binding Specialty}" FontSize="14" VerticalOptions="Center" TextColor="Gray"/>
-                        </StackLayout>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+               Text="Результат будет здесь" />
     </StackLayout>
 </ContentPage>
 
 
-----------------------------------------------------------------------------
-DoctorsPage.xaml.cs
-namespace DoctorApp;
 
-public partial class DoctorsPage : ContentPage
+namespace Konverter
 {
-    public List<Doctor> Doctors { get; set; }
-
-    public DoctorsPage(Clinic clinic)
+    public partial class MainPage : ContentPage
     {
-        InitializeComponent();
-        Doctors = new List<Doctor>
-            {
-                new Doctor { Id = 1, Name = "Иван Иванов", Specialty = "Терапевт" },
-                new Doctor { Id = 2, Name = "Петр Петров", Specialty = "Хирург" },
-                new Doctor { Id = 3, Name = "Мария Сидорова", Specialty = "Окулист" }
-            };
-        DoctorsListView.ItemsSource = Doctors;
-    }
-
-    private async void OnDoctorSelected(object sender, SelectedItemChangedEventArgs e)
-    {
-        if (e.SelectedItem is Doctor selectedDoctor)
+        public MainPage()
         {
-            await Navigation.PushAsync(new AppointmentPage(selectedDoctor));
+            InitializeComponent();
+            InitializeCurrencies();
+        }
+
+      
+        private void InitializeCurrencies()
+        {
+            FromCurrencyPicker.Items.Add("USD");
+            FromCurrencyPicker.Items.Add("EUR");
+            FromCurrencyPicker.Items.Add("GBP");
+
+            ToCurrencyPicker.Items.Add("USD");
+            ToCurrencyPicker.Items.Add("EUR");
+            ToCurrencyPicker.Items.Add("GBP");
+
+            FromCurrencyPicker.SelectedIndex = 0;
+            ToCurrencyPicker.SelectedIndex = 1;
+        }
+
+       
+        private void OnConvertButtonClicked(object sender, EventArgs e)
+        {
+            double amount = double.Parse(AmountEntry.Text);
+            string fromCurrency = FromCurrencyPicker.SelectedItem.ToString();
+            string toCurrency = ToCurrencyPicker.SelectedItem.ToString();
+            double result = ConvertCurrency(amount, fromCurrency, toCurrency);
+            ResultLabel.Text = $"Результат: {result} {toCurrency}";
+        }
+
+      
+        private double ConvertCurrency(double amount, string fromCurrency, string toCurrency)
+        {
+           
+            double exchangeRate = 1.0;
+
+            if (fromCurrency == "USD" && toCurrency == "EUR")
+                exchangeRate = 0.91;
+            else if (fromCurrency == "EUR" && toCurrency == "USD")
+                exchangeRate = 1.1;
+
+            return amount * exchangeRate;
         }
     }
 }
 
-public class Doctor
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string Specialty { get; set; }
-}
 
-----------------------------------------------------------------------------
-ClinicsPage.xaml
+
+
+
+
+
+
+
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="DoctorApp.ClinicsPage"
-             Title="Выберите поликлинику">
-    <StackLayout Padding="20">
-        <!-- Заголовок -->
-        <Label Text="Список поликлиник"
-               FontSize="20"
-               HorizontalOptions="Center"
-               Margin="0,10,0,20"/>
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Konverter.ModifyRatesPage">
 
-        <!-- Список поликлиник -->
-        <ListView x:Name="ClinicsListView"
-                  ItemSelected="OnClinicSelected"
-                  BackgroundColor="#F0F0F0"
-                  SeparatorColor="Gray">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <StackLayout Padding="10" Orientation="Horizontal">
-                            <Label Text="{Binding Name}" FontSize="16" VerticalOptions="Center"/>
-                        </StackLayout>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+    <StackLayout Padding="20">
+        <Label Text="Изменить курс валют"
+               HorizontalOptions="Center" />
+
+      
+        <Label Text="Исходная валюта" />
+        <Picker x:Name="FromCurrencyPicker" />
+
+      
+        <Label Text="Целевая валюта" />
+        <Picker x:Name="ToCurrencyPicker" />
+
+      
+        <Label Text="Новый курс" />
+        <Entry x:Name="NewRateEntry" Keyboard="Numeric" Placeholder="Введите курс" />
+
+       
+        <Button Text="Сохранить"
+                Clicked="OnSaveButtonClicked" />
     </StackLayout>
+
 </ContentPage>
 
-----------------------------------------------------------------------------
-ClinicsPage.xaml.cs
-namespace DoctorApp;
 
-public partial class ClinicsPage : ContentPage
-{
-    public List<Clinic> Clinics { get; set; }
 
-    public ClinicsPage()
-    {
-        InitializeComponent();
-        Clinics = new List<Clinic>
-        {
-            new Clinic { Id = 1, Name = "Поликлиника №1" },
-            new Clinic { Id = 2, Name = "Поликлиника №2" },
-            new Clinic { Id = 2, Name = "Поликлиника №3" },
-            new Clinic { Id = 2, Name = "Поликлиника №4" },
-        };
-        ClinicsListView.ItemsSource = Clinics;
-    }
 
-    private async void OnClinicSelected(object sender, SelectedItemChangedEventArgs e)
-    {
-        if (e.SelectedItem is Clinic selectedClinic)
-        {
-            await Navigation.PushAsync(new DoctorsPage(selectedClinic));
-        }
-    }
-}
-
-public class Clinic
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-}
-
-----------------------------------------------------------------------------
-APPSHELL.XAML
-<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-       xmlns:local="clr-namespace:DoctorApp"
-       x:Class="DoctorApp.AppShell"
-       Title="Запись к врачу">
-
-    <ShellContent
-        Title="Поликлиники"
-        ContentTemplate="{DataTemplate local:ClinicsPage}"
-        Route="ClinicsPage" />
-
-    <ShellContent
-        Title="Врачи"
-        ContentTemplate="{DataTemplate local:DoctorsPage}"
-        Route="DoctorsPage" />
-
-    <ShellContent
-        Title="Запись на прием"
-        ContentTemplate="{DataTemplate local:AppointmentPage}"
-        Route="AppointmentPage" />
-
-</Shell>
-
-----------------------------------------------------------------------------
-APPSHELL.XAML.CS
-using Microsoft.Maui;
 using Microsoft.Maui.Controls;
+using System.Collections.Generic;
 
-namespace DoctorApp
+namespace Konverter
 {
-    public partial class AppShell : Shell
+    public partial class ModifyRatesPage : ContentPage
     {
-        public AppShell()
+        public ModifyRatesPage()
         {
             InitializeComponent();
 
-            Routing.RegisterRoute("ClinicsPage", typeof(ClinicsPage));
-            Routing.RegisterRoute("DoctorsPage", typeof(DoctorsPage));
-            Routing.RegisterRoute("AppointmentPage", typeof(AppointmentPage));
-        }
-    }
-}
-
-----------------------------------------------------------------------------
-AppointmentPageTests.cs
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DoctorApp.Tests
-{
-    public class AppointmentPageTests
-    {
-        [Fact]
-        public void CanCreateAppointment()
-        {
-            // Arrange
-            var appointmentPage = new AppointmentPage(new Doctor
+           
+            List<string> currencies = new List<string>
             {
-                Id = 1,
-                Name = "Иван Иванов",
-                Specialty = "Терапевт"
-            });
-
-            // Act
-            var appointment = new Appointment
-            {
-                Doctor = new Doctor { Id = 1, Name = "Иван Иванов", Specialty = "Терапевт" },
-                Date = DateTime.Now.Date,
-                Time = new TimeSpan(10, 0, 0),
-                PatientName = "Иван Петров",
-                PatientPhone = "1234567890"
+                "USD",
+                "EUR",
+                "GBP",
             };
 
-            // Assert
-            Assert.NotNull(appointment);
-            Assert.Equal("Иван Петров", appointment.PatientName);
-            Assert.Equal("1234567890", appointment.PatientPhone);
+          
+            FromCurrencyPicker.ItemsSource = currencies;
+            ToCurrencyPicker.ItemsSource = currencies;
         }
-    }
 
-    public class Appointment
-    {
-        public Doctor Doctor { get; set; }
-        public DateTime Date { get; set; }
-        public TimeSpan Time { get; set; }
-        public string PatientName { get; set; }
-        public string PatientPhone { get; set; }
-    }
-
-    public class AppointmentPage
-    {
-        private Doctor _selectedDoctor;
-
-        public AppointmentPage(Doctor doctor)
+       
+        private void OnSaveButtonClicked(object sender, EventArgs e)
         {
-            _selectedDoctor = doctor;
-        }
-    }
-}
+          
+            string fromCurrency = FromCurrencyPicker.SelectedItem?.ToString();
+            string toCurrency = ToCurrencyPicker.SelectedItem?.ToString();
 
-
-----------------------------------------------------------------------------
-ClinicsPageTests.cs
-using System.Collections.Generic;
-using Xunit;
-
-namespace DoctorApp.Tests
-{
-    public class ClinicsPageTests
-    {
-        [Fact]
-        public void CanSelectClinicFromList()
-        {
-            // Arrange
-            var clinicsPage = new ClinicsPage();
-            clinicsPage.Clinics = new List<Clinic>
+          
+            if (string.IsNullOrEmpty(fromCurrency) || string.IsNullOrEmpty(toCurrency))
             {
-                new Clinic { Id = 1, Name = "Поликлиника №1" },
-                new Clinic { Id = 2, Name = "Поликлиника №2" }
-            };
+                DisplayAlert("Ошибка", "Пожалуйста, выберите исходную и целевую валюту.", "Ок");
+                return;
+            }
 
-            // Act
-            var selectedClinic = clinicsPage.Clinics[0];
-
-            // Assert
-            Assert.NotNull(selectedClinic);
-            Assert.Equal("Поликлиника №1", selectedClinic.Name);
-        }
-    }
-    public class Clinic
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-    }
-
-    public class ClinicsPage
-    {
-        public List<Clinic> Clinics { get; set; }
-    }
-}
-
-----------------------------------------------------------------------------
-DoctorsPageTests.cs
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DoctorApp.Tests
-{
-    public class DoctorsPageTests
-    {
-        [Fact]
-        public void CanSelectDoctorFromList()
-        {
-            // Arrange
-            var doctorsPage = new DoctorsPage(new Clinic { Id = 1, Name = "Поликлиника №1" });
-            doctorsPage.Doctors = new List<Doctor>
+          
+            if (double.TryParse(NewRateEntry.Text, out double newRate))
             {
-                new Doctor { Id = 1, Name = "Иван Иванов", Specialty = "Терапевт" },
-                new Doctor { Id = 2, Name = "Петр Петров", Specialty = "Хирург" }
-            };
-
-            // Act
-            var selectedDoctor = doctorsPage.Doctors[1];
-
-            // Assert
-            Assert.NotNull(selectedDoctor);
-            Assert.Equal("Петр Петров", selectedDoctor.Name);
-            Assert.Equal("Хирург", selectedDoctor.Specialty);
-        }
-    }
-    public class Doctor
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Specialty { get; set; }
-    }
-
-    public class DoctorsPage
-    {
-        public List<Doctor> Doctors { get; set; }
-
-        public DoctorsPage(Clinic clinic)
-        {
-
+             
+                DisplayAlert("Курс обновлен", $"Новый курс для {fromCurrency} в {toCurrency}: {newRate}", "OK");
+            }
+            else
+            {
+              
+                DisplayAlert("Ошибка", "Введите корректный курс валюты.", "Ок");
+            }
         }
     }
 }
+
+<--/Converter(5var)-->
 
 \n\n\n\n\n\n\n\n\n`
 
