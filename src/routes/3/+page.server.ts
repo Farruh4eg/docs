@@ -217,6 +217,159 @@ namespace DoctorApp
         }
     }
 }
+
+----------------------------------------------------------------------------
+AppointmentPageTests.cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DoctorApp.Tests
+{
+    public class AppointmentPageTests
+    {
+        [Fact]
+        public void CanCreateAppointment()
+        {
+            // Arrange
+            var appointmentPage = new AppointmentPage(new Doctor
+            {
+                Id = 1,
+                Name = "Иван Иванов",
+                Specialty = "Терапевт"
+            });
+
+            // Act
+            var appointment = new Appointment
+            {
+                Doctor = new Doctor { Id = 1, Name = "Иван Иванов", Specialty = "Терапевт" },
+                Date = DateTime.Now.Date,
+                Time = new TimeSpan(10, 0, 0),
+                PatientName = "Иван Петров",
+                PatientPhone = "1234567890"
+            };
+
+            // Assert
+            Assert.NotNull(appointment);
+            Assert.Equal("Иван Петров", appointment.PatientName);
+            Assert.Equal("1234567890", appointment.PatientPhone);
+        }
+    }
+
+    public class Appointment
+    {
+        public Doctor Doctor { get; set; }
+        public DateTime Date { get; set; }
+        public TimeSpan Time { get; set; }
+        public string PatientName { get; set; }
+        public string PatientPhone { get; set; }
+    }
+
+    public class AppointmentPage
+    {
+        private Doctor _selectedDoctor;
+
+        public AppointmentPage(Doctor doctor)
+        {
+            _selectedDoctor = doctor;
+        }
+    }
+}
+
+
+----------------------------------------------------------------------------
+ClinicsPageTests.cs
+using System.Collections.Generic;
+using Xunit;
+
+namespace DoctorApp.Tests
+{
+    public class ClinicsPageTests
+    {
+        [Fact]
+        public void CanSelectClinicFromList()
+        {
+            // Arrange
+            var clinicsPage = new ClinicsPage();
+            clinicsPage.Clinics = new List<Clinic>
+            {
+                new Clinic { Id = 1, Name = "Поликлиника №1" },
+                new Clinic { Id = 2, Name = "Поликлиника №2" }
+            };
+
+            // Act
+            var selectedClinic = clinicsPage.Clinics[0];
+
+            // Assert
+            Assert.NotNull(selectedClinic);
+            Assert.Equal("Поликлиника №1", selectedClinic.Name);
+        }
+    }
+    public class Clinic
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
+
+    public class ClinicsPage
+    {
+        public List<Clinic> Clinics { get; set; }
+    }
+}
+
+----------------------------------------------------------------------------
+DoctorsPageTests.cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DoctorApp.Tests
+{
+    public class DoctorsPageTests
+    {
+        [Fact]
+        public void CanSelectDoctorFromList()
+        {
+            // Arrange
+            var doctorsPage = new DoctorsPage(new Clinic { Id = 1, Name = "Поликлиника №1" });
+            doctorsPage.Doctors = new List<Doctor>
+            {
+                new Doctor { Id = 1, Name = "Иван Иванов", Specialty = "Терапевт" },
+                new Doctor { Id = 2, Name = "Петр Петров", Specialty = "Хирург" }
+            };
+
+            // Act
+            var selectedDoctor = doctorsPage.Doctors[1];
+
+            // Assert
+            Assert.NotNull(selectedDoctor);
+            Assert.Equal("Петр Петров", selectedDoctor.Name);
+            Assert.Equal("Хирург", selectedDoctor.Specialty);
+        }
+    }
+    public class Doctor
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Specialty { get; set; }
+    }
+
+    public class DoctorsPage
+    {
+        public List<Doctor> Doctors { get; set; }
+
+        public DoctorsPage(Clinic clinic)
+        {
+
+        }
+    }
+}
+
 \n\n\n\n\n\n\n\n\n`
 
 return {data};
