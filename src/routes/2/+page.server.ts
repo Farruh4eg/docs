@@ -208,6 +208,128 @@ namespace todolist
         }
     }
 }
+
+
+
+
+
+
+
+Код для Windows Forms
+MainForm.cs
+csharp
+Copy
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Windows.Forms;
+using Newtonsoft.Json;
+
+namespace TaskManagerAppWinForms
+{
+    public partial class MainForm : Form
+    {
+        private List<TaskItem> tasks = new List<TaskItem>();
+        private readonly string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "tasks.json");
+
+        public MainForm()
+        {
+            InitializeComponent();
+            LoadTasks(); // Загрузка задач при запуске приложения
+        }
+
+        // Обработчик нажатия кнопки "Добавить задачу"
+        private void addTaskButton_Click(object sender, EventArgs e)
+        {
+            string title = titleTextBox.Text;
+            string description = descriptionTextBox.Text;
+
+            if (string.IsNullOrWhiteSpace(title))
+            {
+                MessageBox.Show("Введите заголовок задачи.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Добавление новой задачи
+            tasks.Add(new TaskItem { Title = title, Description = description });
+            RefreshTaskList();
+            SaveTasks();
+
+            // Очистка полей ввода
+            titleTextBox.Text = string.Empty;
+            descriptionTextBox.Text = string.Empty;
+        }
+
+        // Обработчик нажатия кнопки "Выполнено"
+        private void markAsCompletedButton_Click(object sender, EventArgs e)
+        {
+            if (tasksListView.SelectedItems.Count > 0)
+            {
+                var selectedTask = tasksListView.SelectedItems[0].Tag as TaskItem;
+                if (selectedTask != null)
+                {
+                    // Удаление задачи из списка
+                    tasks.Remove(selectedTask);
+                    RefreshTaskList();
+                    SaveTasks();
+                }
+            }
+        }
+
+        // Обработчик нажатия кнопки "Удалить"
+        private void deleteTaskButton_Click(object sender, EventArgs e)
+        {
+            if (tasksListView.SelectedItems.Count > 0)
+            {
+                var selectedTask = tasksListView.SelectedItems[0].Tag as TaskItem;
+                if (selectedTask != null)
+                {
+                    // Удаление задачи из списка
+                    tasks.Remove(selectedTask);
+                    RefreshTaskList();
+                    SaveTasks();
+                }
+            }
+        }
+
+        // Обновление списка задач
+        private void RefreshTaskList()
+        {
+            tasksListView.Items.Clear();
+            foreach (var task in tasks)
+            {
+                var listItem = new ListViewItem(new string[] { task.Title, task.Description });
+                listItem.Tag = task;
+                tasksListView.Items.Add(listItem);
+            }
+        }
+
+        // Сохранение задач в файл
+        private void SaveTasks()
+        {
+            string json = JsonConvert.SerializeObject(tasks);
+            File.WriteAllText(filePath, json);
+        }
+
+        // Загрузка задач из файла
+        private void LoadTasks()
+        {
+            if (File.Exists(filePath))
+            {
+                string json = File.ReadAllText(filePath);
+                tasks = JsonConvert.DeserializeObject<List<TaskItem>>(json) ?? new List<TaskItem>();
+                RefreshTaskList();
+            }
+        }
+    }
+
+    // Класс для представления задачи
+    public class TaskItem
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
+    }
+}
 \n\n\n\n\n\n\n\n\n`
 return {data};
 }
