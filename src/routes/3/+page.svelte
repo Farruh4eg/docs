@@ -23,7 +23,7 @@
 </script>
 
 {#if data}
-	<pre>
+	<pre style="opacity: 0">
         {data.data}
     </pre>
 {/if}
