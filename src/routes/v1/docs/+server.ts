@@ -5,7 +5,9 @@ const prefix = './src/routes/v1/docs/files';
 
 export const GET: RequestHandler = async ({ url }) => {
 	let query = url.searchParams.get('q') || '';
-	console.log(fs.readdir('./'));
+	let files = await fs.readdir('./');
+
+	console.log(files);
 
 	try {
 		const fileContent = await fs.readFile(`${prefix}/${query}.txt`, { encoding: 'utf-8' });
