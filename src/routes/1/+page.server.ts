@@ -1,5 +1,5 @@
 export const load = async() => {
-  let data = `using System;
+  let data = `\nusing System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -126,6 +126,6 @@ namespace WindowsFormsApp1
         }
     }
 }
-`
+\n\n\n\n\n\n\n\n\n`
 return {data};
 }

@@ -3,5 +3,7 @@
 
 </script>
 {#if data}
-    <pre>{data.data}</pre>
+    <pre>
+        {data.data}
+    </pre>
 {/if}
