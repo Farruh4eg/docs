@@ -1,10 +1,8 @@
-export const load = async() => {
-  let data = `\n
-  MAUI CODE
-  ==========================================================
+export const load = async () => {
+	let data = `\n
+  MAINPAGE.XAML
 
-
-  <?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TrafficLight.MainPage">
@@ -35,12 +33,102 @@ export const load = async() => {
 
 </ContentPage>
 
+MAINPAGE.XAML.CS
+
+
+using System;
+using System.Timers;
+
+namespace TrafficLight
+{
+    public partial class MainPage : ContentPage
+    {
+        private int currentLightIndex = 0;
+        private System.Timers.Timer autoChangeTimer;
+
+        public MainPage()
+        {
+            InitializeComponent();
+            UpdateLights();
+        }
+
+        private void OnChangeColorClicked(object sender, EventArgs e)
+        {
+            StopAutoChange();
+            MoveToNextLight();
+        }
+
+        private void OnStartAutoChangeClicked(object sender, EventArgs e)
+        {
+            if (int.TryParse(TimerEntry.Text, out int intervalSeconds) && intervalSeconds > 0)
+            {
+                autoChangeTimer = new System.Timers.Timer(intervalSeconds * 1000);
+                autoChangeTimer.Elapsed += (s, args) => MainThread.BeginInvokeOnMainThread(MoveToNextLight);
+                autoChangeTimer.Start();
+
+                StartAutoChangeButton.IsVisible = false;
+                StopAutoChangeButton.IsVisible = true;
+            }
+            else
+            {
+                DisplayAlert("Error", "Please enter a valid number greater than 0.", "OK");
+            }
+        }
+
+        private void OnStopAutoChangeClicked(object sender, EventArgs e)
+        {
+            StopAutoChange();
+        }
+
+        private void StopAutoChange()
+        {
+            if (autoChangeTimer != null)
+            {
+                autoChangeTimer.Stop();
+                autoChangeTimer.Dispose();
+                autoChangeTimer = null;
+            }
+
+            StartAutoChangeButton.IsVisible = true;
+            StopAutoChangeButton.IsVisible = false;
+        }
+
+        private void MoveToNextLight()
+        {
+            currentLightIndex = (currentLightIndex + 1) % 3;
+            UpdateLights();
+        }
+
+        private void UpdateLights()
+        {
+            RedLight.Color = Colors.Grey;
+            YellowLight.Color = Colors.Gray;
+            GreenLight.Color = Colors.Gray;
+
+            switch (currentLightIndex)
+            {
+                case 0:
+                    RedLight.Color = Colors.Red;
+                    break;
+                case 1:
+                    YellowLight.Color = Colors.Yellow;
+                    break;
+                case 2:
+                    GreenLight.Color = Colors.Green;
+                    break;
+            }
+        }
+    }
+}
 
 
 
-CSHARP
-===========================================================================
-  using System;
+
+
+ДЕКСТОП 
+
+
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -167,6 +255,8 @@ namespace WindowsFormsApp1
         }
     }
 }
-\n\n\n\n\n\n\n\n\n`
-return {data};
-}
+
+
+\n\n\n\n\n\n\n\n\n`;
+	return { data };
+};
