@@ -178,6 +178,112 @@ namespace Konverter
 
 <--/Converter(5var)-->
 
+
+
+СИШАРП ДЕКСТОП 
+
+using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
+
+namespace konverter2
+{
+    public partial class Form1 : Form
+    {
+       
+        private Dictionary<string, decimal> exchangeRates;
+
+        public Form1()
+        {
+            InitializeComponent();
+            InitializeCurrencyData();
+        }
+
+      
+        private void InitializeCurrencyData()
+        {
+            exchangeRates = new Dictionary<string, decimal>
+            {
+                { "USD", 1.0m }, 
+                { "EUR", 0.85m },
+                { "GBP", 0.75m },
+                { "JPY", 110.0m }
+            };
+
+         
+            cmbFromCurrency.Items.AddRange(new string[] { "USD", "EUR", "GBP", "JPY" });
+            cmbToCurrency.Items.AddRange(new string[] { "USD", "EUR", "GBP", "JPY" });
+            cmbChangeCurrency.Items.AddRange(new string[] { "USD", "EUR", "GBP", "JPY" });
+            cmbChangeCurrency1.Items.AddRange(new string[] { "USD", "EUR", "GBP", "JPY" }); 
+
+       
+            cmbFromCurrency.SelectedIndex = 0;
+            cmbToCurrency.SelectedIndex = 1;
+            cmbChangeCurrency.SelectedIndex = 0;
+            cmbChangeCurrency1.SelectedIndex = 0; 
+        }
+
+       
+        private void btnConvert_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                decimal amount = decimal.Parse(txtAmount.Text);
+                string fromCurrency = cmbFromCurrency.SelectedItem.ToString();
+                string toCurrency = cmbToCurrency.SelectedItem.ToString();
+
+
+                decimal fromRate = exchangeRates[fromCurrency];
+                decimal toRate = exchangeRates[toCurrency];
+
+                decimal result = amount * (toRate / fromRate);
+                txtResult.Text = $"{result:F2} {toCurrency}";
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("Введите правильную сумму для конвертации.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+       
+        private void btnSaveRate_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string selectedCurrency = cmbChangeCurrency.SelectedItem.ToString();
+                decimal newRate = decimal.Parse(txtNewRate.Text);
+                exchangeRates[selectedCurrency] = newRate;
+
+                MessageBox.Show($"Курс для {selectedCurrency} успешно обновлён!", "Обновление курса", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("Введите правильный курс валюты.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+    
+        private void btnSaveRate1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string selectedCurrency = cmbChangeCurrency1.SelectedItem.ToString();
+                decimal newRate = decimal.Parse(txtNewRate.Text); 
+
+
+                exchangeRates[selectedCurrency] = newRate;
+
+                MessageBox.Show($"Курс для {selectedCurrency} успешно обновлён!", "Обновление курса", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("Введите правильный курс для выбранной валюты.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+    }
+}
+
+
 \n\n\n\n\n\n\n\n\n`
 
 return {data};
