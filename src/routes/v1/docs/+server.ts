@@ -8,6 +8,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	let files = await fs.readdir('./');
 
 	console.log(files);
+	console.log(process.cwd());
 
 	try {
 		const fileContent = await fs.readFile(`${prefix}/${query}.txt`, { encoding: 'utf-8' });
