@@ -1,5 +1,46 @@
 export const load = async() => {
-  let data = `\nusing System;
+  let data = `\n
+  MAUI CODE
+  ==========================================================
+
+
+  <?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TrafficLight.MainPage">
+
+    <VerticalStackLayout Padding="20" Spacing="20" VerticalOptions="Center" BackgroundColor="White">
+
+        <Grid x:Name="TrafficLightContainer" RowSpacing="1" Padding="10" WidthRequest="150" HeightRequest="300">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="100"/>
+            </Grid.RowDefinitions>
+                <BoxView x:Name="RedLight" Color="Gray" CornerRadius="50" HeightRequest="100" WidthRequest="100" Grid.Row="0" />
+                <BoxView x:Name="YellowLight" Color="Gray" CornerRadius="50" HeightRequest="100" WidthRequest="100" Grid.Row="1" />
+                <BoxView x:Name="GreenLight" Color="Gray" CornerRadius="50" HeightRequest="100" WidthRequest="100" Grid.Row="2" />
+        </Grid>
+
+        <Button x:Name="ChangeColorButton" Text="Change Color" Clicked="OnChangeColorClicked" />
+
+        <VerticalStackLayout>
+            <Entry x:Name="TimerEntry" Placeholder="Enter timer in seconds" Keyboard="Numeric" />
+            <Button x:Name="StartAutoChangeButton" Text="Start Auto Change" Clicked="OnStartAutoChangeClicked" />
+        </VerticalStackLayout>
+
+        <Button x:Name="StopAutoChangeButton" Text="Stop Auto Change" IsVisible="False" Clicked="OnStopAutoChangeClicked" />
+
+    </VerticalStackLayout>
+
+</ContentPage>
+
+
+
+
+CSHARP
+===========================================================================
+  using System;
 using System.Drawing;
 using System.Windows.Forms;
 
