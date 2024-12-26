@@ -1,5 +1,28 @@
 export const load = async() => {
-  let data = `\n\n\n<--Converter(5var)-->
+  let data = `\n\n\n
+  APPSHELL.XAML 
+
+       <?xml version="1.0" encoding="utf-8" ?>
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+       xmlns:local="clr-namespace:Konverter"
+       x:Class="Konverter.AppShell">
+
+
+    <TabBar>
+        <ShellContent Title="Главная"
+                      ContentTemplate="{DataTemplate local:MainPage}" />
+        <ShellContent Title="Изменить курс"
+                      Route="ModifyRatesPage"
+                      ContentTemplate="{DataTemplate local:ModifyRatesPage}" />
+    </TabBar>
+</Shell>
+
+
+
+
+
+  <--Converter(5var)-->
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
